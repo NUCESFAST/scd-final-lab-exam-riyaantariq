@@ -18,7 +18,6 @@ pipeline {
             steps {
                 // Build each Docker image separately
                 script {
-                    withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         bat 'docker build -t auth ./Auth'
                         bat 'docker build -t classrooms ./Classrooms'
                         bat 'docker build -t post ./Post'
