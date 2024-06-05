@@ -23,7 +23,7 @@ pipeline {
                         bat 'docker build -t post ./Post'
                         bat 'docker build -t client ./client'
                     }
-                }
+                
             }
         }
 
