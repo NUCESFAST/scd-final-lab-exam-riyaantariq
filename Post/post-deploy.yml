@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post
+  template:
+    metadata:
+      labels:
+        app: post
+    spec:
+      containers:
+      - name: post
+        image: <post_image_name>:<post_image_tag>
+        ports:
+        - containerPort: 11013
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongodb:27017/postdb

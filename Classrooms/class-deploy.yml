@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: classrooms-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: classrooms
+  template:
+    metadata:
+      labels:
+        app: classrooms
+    spec:
+      containers:
+      - name: classrooms
+        image: <classrooms_image_name>:<classrooms_image_tag>
+        ports:
+        - containerPort: 11012
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongodb:27017/classroomsdb
