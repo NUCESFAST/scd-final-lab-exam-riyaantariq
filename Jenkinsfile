@@ -2,32 +2,39 @@ pipeline {
     agent any
 
     environment {
+        DOCKER_CREDENTIALS_ID = '777e72f2-96a7-4ea6-8c10-32401a1b398d'
         DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
         IMAGE_TAG = "latest"
     }
 
     stages {
-        stage('1101 Checkout') {
+        stage('21i-1101 Checkout') {
             steps {
                 // Checkout code from version control
                 git 'https://github.com/NUCESFAST/scd-final-lab-exam-riyaantariq'
             }
         }
 
-        stage('1101 Build Docker Images') {
+        stage('21i-1101 Build Docker Images') {
             steps {
-                // Build Docker images
-                bat 'docker build -t myimage .'
+                // Build each Docker image separately
+                script {
+                    withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        bat 'docker build -t auth ./Auth'
+                        bat 'docker build -t classrooms ./Classrooms'
+                        bat 'docker build -t post ./Post'
+                        bat 'docker build -t client ./client'
+                    }
+                }
             }
         }
 
-        stage('1101 Run Docker Containers') {
+        stage('21i-1101 Run Services') {
             steps {
-                // Run Docker containers
-                bat 'docker run -d --name mycontainer myimage'
+                // Start Docker Compose services
+                bat 'docker-compose up -d'
             }
         }
-
     }
 
     post {
