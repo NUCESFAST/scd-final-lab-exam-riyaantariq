@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'creds'
         DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
         IMAGE_TAG = "latest"
     }
