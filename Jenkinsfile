@@ -2,59 +2,43 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
         IMAGE_TAG = "latest"
     }
 
     stages {
-        stage('Checkout') {
+        stage('21i-1101 Checkout') {
             steps {
                 // Checkout code from version control
                 git 'https://github.com/NUCESFAST/scd-final-lab-exam-riyaantariq'
             }
         }
 
-        stage('Build Docker Images') {
+        stage('21i-1101 Build Docker Images') {
             steps {
+                // Build each Docker image separately
                 script {
-                    docker.compose.build()
-                }
+                        bat 'docker build -t auth ./Auth'
+                        bat 'docker build -t classrooms ./Classrooms'
+                        bat 'docker build -t post ./Post'
+                        bat 'docker build -t client ./client'
+                    }
+                
             }
         }
 
-        stage('Run Docker Containers') {
+        stage('21i-1101 Run Services') {
             steps {
-                script {
-                    docker.compose.up()
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    // Run your tests here
-                    // For example, you can run unit tests within your containers
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    // You can add your deployment steps here
-                    // For example, pushing images to a Docker registry
-                }
+                // Start Docker Compose services
+                bat 'docker-compose up -d'
             }
         }
     }
 
     post {
         always {
-            script {
-                // Ensure that the Docker Compose services are brought down
-                docker.compose.down()
-            }
+            // Ensure that the Docker Compose services are brought down
+            bat 'docker-compose down'
         }
     }
 }
