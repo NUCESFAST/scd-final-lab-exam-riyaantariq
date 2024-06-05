@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
         IMAGE_TAG = "latest"
     }
 
@@ -17,7 +17,8 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    docker.compose.build()
+                    // Build Docker images
+                    sh 'docker build -t myimage .'
                 }
             }
         }
@@ -25,35 +26,20 @@ pipeline {
         stage('Run Docker Containers') {
             steps {
                 script {
-                    docker.compose.up()
+                    // Run Docker containers
+                    sh 'docker run -d --name mycontainer myimage'
                 }
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    // Run your tests here
-                    // For example, you can run unit tests within your containers
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    // You can add your deployment steps here
-                    // For example, pushing images to a Docker registry
-                }
-            }
-        }
+       
     }
 
     post {
         always {
             script {
                 // Ensure that the Docker Compose services are brought down
-                docker.compose.down()
+                sh 'docker-compose down'
             }
         }
     }
