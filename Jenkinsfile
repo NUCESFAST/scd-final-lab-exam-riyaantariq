@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
         IMAGE_TAG = "latest"
     }
 
     parameters {
-        credentials(name: 'DOCKER_HUB_CREDENTIALS', description: 'Docker Hub credentials', credentialType: 'Username with password')
+        credentials(name: 'DOCKER_HUB_CREDENTIALS', description: 'Docker Hub credentials', credentialType: 'UsernamePassword')
     }
 
     stages {
@@ -23,8 +23,8 @@ pipeline {
                 script {
                     // Build Docker images
                     withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        bat 'docker login -u $DOCKER_USER -p $DOCKER_PASSWORD'
-                        bat 'docker build -t myimage .'
+                        bat "docker login -u $DOCKER_USER -p $DOCKER_PASSWORD"
+                        bat "docker build -t myimage ."
                     }
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker containers
-                    bat 'start docker run -d --name mycontainer myimage'
+                    bat 'docker run -d --name mycontainer myimage'
                 }
             }
         }
