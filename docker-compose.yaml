@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  auth:
+    build: ./Auth
+    ports:
+      - "11011:11011"
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/authdb
+
+  classrooms:
+    build: ./Classrooms
+    ports:
+      - "11012:11012"
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/classroomsdb
+
+  post:
+    build: ./Post
+    ports:
+      - "11013:11013"
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/postdb
+
+  client:
+    build: ./client
+    ports:
+      - "1101:1101"
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
